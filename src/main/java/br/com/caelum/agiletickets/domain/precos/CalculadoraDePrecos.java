@@ -5,30 +5,25 @@ import java.math.BigDecimal;
 import br.com.caelum.agiletickets.models.Sessao;
 
 public class CalculadoraDePrecos {
+	
+	private static final double DESCONTO_10_PORCENTO = 0.10; 
+
+	private static final int TEMPO_60_MINUTOS = 60;
 
 	public static BigDecimal calcula(Sessao sessao, Integer quantidade) {
-		BigDecimal preco;
+		
+		BigDecimal preco = calculaPreco(sessao, sessao.getEspetaculo().getTipo().getParametroPrimeiro(), sessao.getEspetaculo().getTipo().getParametroSegundo());
 
-		switch (sessao.getEspetaculo().getTipo()) {
-		case CINEMA:
-		case SHOW:
-			preco = calculaPreco(sessao, 0.05, 0.10);
-			break;
-
-		case BALLET:
-		case ORQUESTRA:
-			preco = calculaPreco(sessao, 0.50, 0.20);
-			if (sessao.getDuracaoEmMinutos() > 60) {
-				preco = preco.add(sessao.getPreco().multiply(BigDecimal.valueOf(0.10)));
-			}
-			break;
+		if ( sessao.getEspetaculo().getTipo().isAdicina10PorCentoQuandoSessaoMaior60Minutos() ) {
 			
-		default:
-			preco = sessao.getPreco();
-			break;
+			if (sessao.getDuracaoEmMinutos() > TEMPO_60_MINUTOS) {
+				preco = preco.add(sessao.getPreco().multiply(BigDecimal.valueOf(DESCONTO_10_PORCENTO)));
+			}
+			
 		}
-
+		
 		return preco.multiply(BigDecimal.valueOf(quantidade));
+		
 	}
 
 	private static BigDecimal calculaPreco(Sessao sessao, double primeiroPercentual, double segundoPercentual) {
@@ -36,9 +31,13 @@ public class CalculadoraDePrecos {
 		BigDecimal preco;
 		
 		if ((sessao.getTotalIngressos() - sessao.getIngressosReservados())/ sessao.getTotalIngressos().doubleValue() <= primeiroPercentual) {
+			
 			preco = sessao.getPreco().add(sessao.getPreco().multiply(BigDecimal.valueOf(segundoPercentual)));
+			
 		} else {
+			
 			preco = sessao.getPreco();
+			
 		}
 		
 		return preco;

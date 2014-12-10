@@ -12,7 +12,7 @@ public class CalculadoraDePrecos {
 
 	public static BigDecimal calcula(Sessao sessao, Integer quantidade) {
 		
-		BigDecimal preco = calculaPreco(sessao, sessao.getEspetaculo().getTipo().getParametroPrimeiro(), sessao.getEspetaculo().getTipo().getParametroSegundo());
+		BigDecimal preco = calculaPreco(sessao, sessao.getEspetaculo().getTipo().getMinimoDeIngressosDisponivelParaAumentarPreco(), sessao.getEspetaculo().getTipo().getAdicionaAMaisNosUltimosIngressos());
 
 		if ( sessao.getEspetaculo().getTipo().isAdicina10PorCentoQuandoSessaoMaior60Minutos() ) {
 			
@@ -26,13 +26,13 @@ public class CalculadoraDePrecos {
 		
 	}
 
-	private static BigDecimal calculaPreco(Sessao sessao, double primeiroPercentual, double segundoPercentual) {
+	private static BigDecimal calculaPreco(Sessao sessao, double minimoDeIngressosDisponivelParaAumentarPreco, double adicionaAMaisNosUltimosIngressos) {
 
 		BigDecimal preco;
 		
-		if ((sessao.getTotalIngressos() - sessao.getIngressosReservados())/ sessao.getTotalIngressos().doubleValue() <= primeiroPercentual) {
+		if ((sessao.getTotalIngressos() - sessao.getIngressosReservados())/ sessao.getTotalIngressos().doubleValue() <= minimoDeIngressosDisponivelParaAumentarPreco) {
 			
-			preco = sessao.getPreco().add(sessao.getPreco().multiply(BigDecimal.valueOf(segundoPercentual)));
+			preco = sessao.getPreco().add(sessao.getPreco().multiply(BigDecimal.valueOf(adicionaAMaisNosUltimosIngressos)));
 			
 		} else {
 			

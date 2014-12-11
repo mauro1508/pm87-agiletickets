@@ -29,7 +29,7 @@ public class EspetaculoTest {
 			dtInicio = dtInicio.plusDays(1);
 		}
 		
-		Assert.assertEquals(sessoes.size(), 3);
+		Assert.assertEquals(sessoes.size(), 10);
 		
 	}
 	
